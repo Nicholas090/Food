@@ -98,70 +98,78 @@ window.addEventListener('DOMContentLoaded', () => {
     //MODAL
 
 
-//     const modalWindow = document.querySelector('.modal'),
-//         btnModal = document.querySelectorAll('[data-modal]'),
-//         closeWindow = document.querySelector('[data-close]');
+    const modalWindow = document.querySelector('.modal'),
+        btnModal = document.querySelectorAll('[data-modal]');
 
-//         function openModal() {
-//                modalWindow.style.display = 'block';
-//         document.body.style.overflow = 'hidden';
-//         clearInterval(modalTimerId);
-//         }
-//         function closeModal() {
-//             modalWindow.style.display = 'none';
-//             document.body.style.overflow = '';
-//         }
-     
+    function openModal() {
+        modalWindow.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
+    }
 
-//     btnModal.forEach(e => {
-//         e.addEventListener('click', openModal);
-         
-//     });
+    function closeModal() {
+        modalWindow.style.display = 'none';
+        document.body.style.overflow = '';
+    }
 
-//     closeWindow.addEventListener('click', closeModal);
 
-//     modalWindow.addEventListener('click', (e) => {
-//         if (e.target == modalWindow) {
-//             closeModal();
-//         }
-//     });
-//     document.addEventListener('keydown', (e) => {
-//         if (e.code === "Escape" && modalWindow.style.display == 'block') {
-//             closeModal();
-//         }
-//     });
-//     const modalTimerId = setTimeout(openModal, 9000);
+    btnModal.forEach(e => {
+        e.addEventListener('click', openModal);
 
-  
-//       function modalScroll() {
-//            if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
-//                openModal();   
-//                window.removeEventListener('scroll', modalScroll); 
-//             }   
-//     }
- 
-//  window.addEventListener('scroll', modalScroll);
+    });
 
-  //Используем классы
 
-  class MenuCard {
-      constructor(src, alt, title, descr, price, parentSelector){
-                this.src = src;
-                this.alt = alt;
-                this.title = title;
-                this.descr = descr;
-                this.price = price;
-                this.parent = document.querySelector(parentSelector);
-                this.transfer = 28;
-                this.changeToUAH();
-      }
-            changeToUAH(){
-                this.price = this.price * this.transfer
+
+    modalWindow.addEventListener('click', (e) => {
+        if (e.target == modalWindow || e.target.getAttribute('data-close') == '') {
+            closeModal();
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Escape" && modalWindow.style.display == 'block') {
+            closeModal();
+        }
+    });
+    const modalTimerId = setTimeout(openModal, 322000);
+
+
+    function modalScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+            openModal();
+            window.removeEventListener('scroll', modalScroll);
+        }
+    }
+
+    window.addEventListener('scroll', modalScroll);
+
+    //Используем классы
+
+    class MenuCard {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.classes = classes;
+            this.parent = document.querySelector(parentSelector);
+            this.transfer = 28;
+            this.changeToUAH();
+        }
+        changeToUAH() {
+            this.price = this.price * this.transfer;
+        }
+
+        render() {
+            const element = document.createElement('div');
+            if (this.classes.length === 0) {
+                this.element = 'menu__item';
+                element.classList.add(this.element);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
             }
 
-            render(){
-                const element = document.createElement('div');
-                element.innerHTML = `
+            element.innerHTML = `
                 <div class="menu__item">
                 <img src="${this.src}" alt=${this.alt}>
                 <h3 class="menu__item-subtitle">${this.title}</h3>
@@ -174,7 +182,115 @@ window.addEventListener('DOMContentLoaded', () => {
             </div>
             `;
             this.parent.append(element);
-            }
+        }
+
+    }
+    new MenuCard(
+        "img/tabs/post.jpg",
+        "post",
+        '"Меню "Постное"',
+        "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков. ",
+        10,
+        ".menu .container"
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
+        22,
+        ".menu .container"
+
+    ).render();
+
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        6,
+        ".menu .container"
+    ).render();
+
+    // Forms
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'img/spinner.svg',
+        success: 'Спасибо! Мы скоро с вами свяжемся!',
+        fail: 'Что-то пошло не так'
+
+    };
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;
+            `;
+            form.insertAdjacentElement('afterend', statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            request.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
+
+            const object = {};
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            let json = JSON.stringify(object);
+
+            request.send(json);
+
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    showThanksModal(message.success);
+                    form.reset();
+
+                    statusMessage.remove();
+
+                } else {
+                    showThanksModal(message.fail);
+                }
+            });
+
+        });
+    }
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close >×</div>
+                <div clss="modal__title">${message}</div>
+            </div>
+            `;
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();     
+        prevModalDialog.classList.add('show');
+        prevModalDialog.classList.remove('hide');
+        closeModal();
+      }, 4000);
     }
 
 
