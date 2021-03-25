@@ -11,13 +11,25 @@ import {openModal} from './modules/modal';
 window.addEventListener('DOMContentLoaded', () => {
     const modalTimerId = setTimeout(()=> openModal('.modal',modalTimerId ), 322000);
 
-tabs();
+tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
 modal('[data-modal]', '.modal', modalTimerId);
-timer();
+timer('.timer', '2021-06-12');
 cards();
 calculator();
-forms(modalTimerId);
-slider();
+forms('form', modalTimerId);
+slider({
+     container: '.offer__slider',
+     nextArrow:'.offer__slider-next',
+     prevArrow: '.offer__slider-prev',
+     totalCounter: '#total',
+     currentCounter:'#current',
+     field:'.offer__slider-inner',
+     wrapper:'.offer__slider-wrapper',
+     slide:'.offer__slide'
+
+
+
+});
 
 
 });

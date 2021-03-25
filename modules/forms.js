@@ -1,8 +1,7 @@
-import {closeModal,openModal} from './modal';
-import {postData} from '../services/services';
-
-function forms(formSelector, modalTimerId) {
-
+import {closeModal, openModal} from './modal';
+import{postData} from '../js/services/services';
+function forms(formSelector, modalTimerId){
+   
 
     const forms = document.querySelectorAll(formSelector);
 
@@ -39,10 +38,10 @@ function forms(formSelector, modalTimerId) {
 
 
 
-            // const object = {};
-            // formData.forEach(function (value, key) {
-            //     object[key] = value;
-            // })
+            const object = {};
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
 
 
             postData('http://localhost:3000/requests', json)
@@ -84,9 +83,9 @@ function forms(formSelector, modalTimerId) {
         }, 4000);
     }
 
-
+  
 
 
 }
 
-export default forms;
+export default  forms;
